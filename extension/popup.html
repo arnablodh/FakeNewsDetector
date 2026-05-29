@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winston News AI</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --card: #18181b;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --border: #27272a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      width: 320px;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-icon {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--primary), #a855f7);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 14px;
+    }
+
+    .logo-text {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff, var(--text-muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .version {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--border);
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+
+    .card {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+
+    .score-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 12px 0;
+      position: relative;
+    }
+
+    .radial-progress {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(var(--border) 100%, transparent 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.5s ease;
+    }
+
+    .radial-progress::before {
+      content: '';
+      position: absolute;
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background-color: var(--card);
+    }
+
+    .score-value {
+      position: absolute;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .score-label {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .info-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    .info-title {
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .info-val {
+      font-weight: 600;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      margin-top: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .status-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      min-height: 18px;
+    }
+
+    .scanning-line {
+      display: none;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      animation: scan 1.5s infinite linear;
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+    .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-container">
+        <div class="logo-icon">W</div>
+        <span class="logo-text">Winston News AI</span>
+      </div>
+      <span class="version">v1.0</span>
+    </div>
+
+    <!-- Active scan card -->
+    <div class="card" id="scanCard">
+      <div class="scanning-line" id="scannerLine"></div>
+      
+      <p id="welcomeMsg" style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+        Analyze the current article for AI-generated falsehoods, bias levels, and credibility score.
+      </p>
+
+      <!-- Score Gauge (hidden by default) -->
+      <div id="resultsArea" class="hidden">
+        <div class="score-container">
+          <div class="radial-progress" id="scoreGauge">
+            <span class="score-value" id="scoreNumber">0%</span>
+          </div>
+          <span class="score-label" id="credibilityLabel">Analyzing...</span>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-title">Bias Level</div>
+            <div class="info-val" id="biasVal">-</div>
+          </div>
+          <div class="info-item">
+            <div class="info-title">Model Used</div>
+            <div class="info-val" id="modelVal">TF-IDF + LR</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <div class="status-text" id="statusMessage">Ready to scan article.</div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <button class="btn" id="scanBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      Analyze Article
+    </button>
+    
+    <button class="btn btn-secondary hidden" id="dashboardBtn">
+      View Deep SHAP Highlights
+    </button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+:root {
+  --color-primary: hsl(220, 90%, 56%);
+  --color-primary-foreground: hsl(0, 0%, 100%);
+  --color-background: hsl(0, 0%, 98%);
+  --color-foreground: hsl(220, 10%, 20%);
+  --color-muted: hsl(220, 10%, 90%);
+  --color-muted-foreground: hsl(220, 5%, 40%);
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme="dark"] {
+  --color-background: hsl(220, 10%, 10%);
+  --color-foreground: hsl(0, 0%, 95%);
+  --color-muted: hsl(220, 5%, 20%);
+}

@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Winston News AI - Fake News Detector",
+  "version": "1.0",
+  "description": "Scrapes and analyzes web articles for fake news, bias, and credibility scores using Winston News AI.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://localhost:8000/*",
+    "http://localhost:3001/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
